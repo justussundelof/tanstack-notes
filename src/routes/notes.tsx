@@ -18,18 +18,18 @@ function NotesComponent() {
   const queryClient = useQueryClient()
   const notesQuery = useSuspenseQuery(notesListQueryOptions())
   const [title, setTitle] = useState('')
-  const [body, setBody] = useState('')
+  const [content, setContent] = useState('')
 
   // Mutation for creating a new note
   const createMutation = useMutation({
-    mutationFn: (data: { title: string; body?: string }) =>
+    mutationFn: (data: { title: string; content?: string }) =>
       createNote({ data }),
     onSuccess: () => {
       // Invalidate and refetch notes list
       queryClient.invalidateQueries({ queryKey: ['notes'] })
       // Clear form
       setTitle('')
-      setBody('')
+      setContent('')
     },
   })
 
@@ -38,7 +38,7 @@ function NotesComponent() {
     if (title.trim()) {
       createMutation.mutate({
         title: title.trim(),
-        body: body.trim() || undefined,
+        content: content.trim() || undefined,
       })
     }
   }
@@ -67,13 +67,13 @@ function NotesComponent() {
               />
             </div>
             <div>
-              <label htmlFor="body" className="block text-sm font-medium mb-1">
-                Body
+              <label htmlFor="content" className="block text-sm font-medium mb-1">
+                Content
               </label>
               <textarea
-                id="body"
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter note content (optional)"
                 rows={4}
@@ -120,9 +120,9 @@ function NotesComponent() {
                         <span className="text-yellow-500">★</span>
                       )}
                     </div>
-                    {note.body && (
+                    {note.content && (
                       <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                        {note.body}
+                        {note.content}
                       </p>
                     )}
                   </Link>

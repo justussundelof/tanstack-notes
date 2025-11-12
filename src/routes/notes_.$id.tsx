@@ -45,12 +45,12 @@ function NoteComponent() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(noteQuery.data.title)
-  const [editBody, setEditBody] = useState(noteQuery.data.body || '')
+  const [editContent, setEditContent] = useState(noteQuery.data.content || '')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   // Update mutation with optimistic updates
   const updateMutation = useMutation({
-    mutationFn: (updates: { title?: string; body?: string; favorite?: boolean }) =>
+    mutationFn: (updates: { title?: string; content?: string; favorite?: boolean }) =>
       updateNote({ data: { id: noteId, updates } }),
     onMutate: async (updates) => {
       // Cancel outgoing refetches
@@ -96,14 +96,14 @@ function NoteComponent() {
     if (editTitle.trim()) {
       updateMutation.mutate({
         title: editTitle.trim(),
-        body: editBody.trim() || undefined,
+        content: editContent.trim() || undefined,
       })
     }
   }
 
   const handleCancelEdit = () => {
     setEditTitle(noteQuery.data.title)
-    setEditBody(noteQuery.data.body || '')
+    setEditContent(noteQuery.data.content || '')
     setIsEditing(false)
   }
 
@@ -152,19 +152,19 @@ function NoteComponent() {
           </div>
         </div>
 
-        {/* Body */}
+        {/* Content */}
         <div className="mt-4">
           {isEditing ? (
             <textarea
-              value={editBody}
-              onChange={(e) => setEditBody(e.target.value)}
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter note content"
               rows={8}
             />
           ) : (
             <div className="text-gray-700 whitespace-pre-wrap">
-              {noteQuery.data.body || (
+              {noteQuery.data.content || (
                 <em className="text-gray-400">No content</em>
               )}
             </div>
